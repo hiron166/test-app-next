@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import "./globals.css";
+// import "./globals.css";
 // import { posts } from "./_data/posts";
 import Link from "next/link";
 import { Post } from "./_types/post";

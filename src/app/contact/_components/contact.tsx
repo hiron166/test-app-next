@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import "../../globals.css";
+// import "../../globals.css";
 import { ContactForm } from "../_types/contactForm";
 
 export const Contact: React.FC = () => {

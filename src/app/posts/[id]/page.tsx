@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "../globals.css";
+// import "../globals.css";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { Post } from "../_types/post";
+import { Post } from "../../_types/post";
 
-export const Detail: React.FC = () => {
+export default function Detail() {
   const { id } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -46,7 +46,7 @@ export const Detail: React.FC = () => {
             <div className="my-8 mx-auto max-w-3xl px-4">
               <div>
                 <div className="h-auto max-w-full">
-                  <Image src={post.thumbnailUrl} alt="" />
+                  <Image src={post.thumbnailUrl} alt="" width={800} height={400}/>
                 </div>
               </div>
               <div className="p-4">
@@ -77,4 +77,4 @@ export const Detail: React.FC = () => {
       </>
     );
   }
-};
+}
