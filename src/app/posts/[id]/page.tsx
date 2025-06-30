@@ -1,24 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import "../globals.css";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { Post } from "../../_types/post";
+import { MicroCmsPost } from "../../_types/MicroCmsPost";
 
 export default function Detail() {
   const { id } = useParams();
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<MicroCmsPost | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetcher = async () => {
+      setIsLoading(true);
       try {
         const res = await fetch(
-          `https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`
+          `https://vx8lbfap52.microcms.io/api/v1/posts/${id}`,
+          {
+            headers: {
+              "X-MICROCMS-API-KEY": process.env
+                .NEXT_PUBLIC_MICROCMS_API_KEY as string,
+            },
+          }
         );
         const data = await res.json();
-        setPost(data.post);
+        setPost(data);
       } catch (e) {
         console.log(e);
       } finally {
@@ -47,7 +53,7 @@ export default function Detail() {
             <div>
               <div className="h-auto max-w-full">
                 <Image
-                  src={post.thumbnailUrl}
+                  src={post.thumbnail.url}
                   alt=""
                   width={800}
                   height={400}
@@ -62,15 +68,15 @@ export default function Detail() {
                 <div className="flex">
                   {post.categories.map((category) => (
                     <div
-                      key={category}
+                      key={category.id}
                       className="border rounded text-[#06c] border-[#06c] mr-2 px-1 py-0.5"
                     >
-                      {category}
+                      {category.name}
                     </div>
                   ))}
                 </div>
               </div>
-              <h1 className="text-2xl mt-2 mb-4">{`APIで取得した${post.title}`}</h1>
+              <h1 className="text-2xl mt-2 mb-4">{post.title}</h1>
               <div
                 dangerouslySetInnerHTML={{ __html: post.content }}
                 className=""
