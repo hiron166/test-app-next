@@ -1,6 +1,5 @@
 "use client";
-import  Link from "next/link";
-// import "../App.css";
+import Link from "next/link";
 
 export const Header: React.FC = () => {
   return (
@@ -12,4 +11,3 @@ export const Header: React.FC = () => {
     </>
   );
 };
-
