@@ -27,8 +27,7 @@ export const Contact: React.FC = () => {
       "https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/contacts";
     try {
       const res = await fetch(apiUrl, {
-        // method: "POST",
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
