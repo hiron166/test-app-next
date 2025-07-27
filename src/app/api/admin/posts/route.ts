@@ -73,6 +73,7 @@ export const GET = async (request: NextRequest) => {
         createdAt: "desc",
       },
     });
+
     return NextResponse.json({
       status: "OK",
       posts: posts,
