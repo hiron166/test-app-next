@@ -27,9 +27,8 @@ export default function Page() {
         thumbnailUrl,
         categories,
       }),
-
     });
-    const {id} = await res.json()
+    const { id } = await res.json();
     router.push(`/admin/posts/${id}`);
     alert("記事を作成しました");
   };

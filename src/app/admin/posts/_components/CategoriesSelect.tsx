@@ -1,13 +1,14 @@
-import { Category } from "@/app/_types/Category";
+import * as React from "react";
 import {
   Box,
-  FormControl,
-  MenuItem,
   OutlinedInput,
+  MenuItem,
+  FormControl,
   Select,
   Chip,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import { Category } from "@/app/_types/Category";
+import { useEffect } from "react";
 
 interface Props {
   selectedCategories: Category[];
@@ -46,12 +47,13 @@ export const CategoriesSelect: React.FC<Props> = ({
     <>
       <FormControl className="w-full">
         <Select
+          multiple
           value={selectedCategories}
-          onChange={(e) => handleChange(e.target.value as unknown as number[])}
+          onChange={(e) => handleChange((e.target.value as unknown) as number[])}
           input={<OutlinedInput />}
-          renderValue={(selected:Category[]) =>(
-            <Box sx={{display:"flex",flexWrap:"wrap",gap:0.5}}>
-              {selected.map((value:Category) =>(
+          renderValue={(selected: Category[]) => (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {selected.map((value: Category) => (
                 <Chip key={value.id} label={value.name} />
               ))}
             </Box>
