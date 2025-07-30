@@ -6,6 +6,7 @@ interface Props {
   setName: (name: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onDelete?: () => void;
+  isSubmitting: boolean;
 }
 
 export const CategoryForm: React.FC<Props> = ({
@@ -14,6 +15,7 @@ export const CategoryForm: React.FC<Props> = ({
   setName,
   onSubmit,
   onDelete,
+  isSubmitting,
 }) => {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -35,6 +37,7 @@ export const CategoryForm: React.FC<Props> = ({
       <button
         type="submit"
         className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        disabled={isSubmitting}
       >
         {mode === "new" ? "作成" : "更新"}
       </button>
@@ -43,6 +46,7 @@ export const CategoryForm: React.FC<Props> = ({
           type="button"
           onClick={onDelete}
           className="py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 ml-2"
+          disabled={isSubmitting}
         >
           削除
         </button>

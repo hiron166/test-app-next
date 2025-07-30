@@ -11,50 +11,65 @@ export default function Page() {
   const [content, setContent] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
-  const {id} = useParams();
+  const { id } = useParams();
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsSubmitting(false);
     // フォームのデフォルトの動作をキャンセルします。
     e.preventDefault();
     // 記事を作成します。
-    await fetch(`/api/admin/posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        thumbnailUrl,
-        categories,
-      }),
-    });
-    alert("記事を更新しました")
+    try {
+      await fetch(`/api/admin/posts/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          thumbnailUrl,
+          categories,
+        }),
+      });
+    } catch (e) {
+      console.error("記事の更新に失敗しました:", e);
+      alert("記事の更新に失敗しました");
+    } finally {
+      setIsSubmitting(true);
+      alert("記事を更新しました");
+    }
   };
 
   const handleDelete = async () => {
-    if(!confirm("記事を削除しますか？"))return;
-
-    await fetch(`/api/admin/posts/${id}`,{
-      method: "DELETE",
-    })
-    alert("記事を削除しました");
-    router.push("/admin/posts");
-  }
+    if (!confirm("記事を削除しますか？")) return;
+    setIsSubmitting(false);
+    try {
+      await fetch(`/api/admin/posts/${id}`, {
+        method: "DELETE",
+      });
+    } catch (e) {
+      console.error("記事の削除に失敗しました:", e);
+      alert("記事の削除に失敗しました");
+    } finally {
+      setIsSubmitting(true);
+      alert("記事を削除しました");
+      router.push("/admin/posts");
+    }
+  };
 
   useEffect(() => {
     const fetcher = async () => {
-      const res = await fetch(`/api/admin/posts/${id}`)
-      const {post}: {post:Post} = await res.json();
+      const res = await fetch(`/api/admin/posts/${id}`);
+      const { post }: { post: Post } = await res.json();
       setTitle(post.title);
       setContent(post.content);
       setThumbnailUrl(post.thumbnailUrl);
       setCategories(post.postCategories.map((pc) => pc.category));
-    }
-    fetcher()
+    };
+    fetcher();
   }, [id]);
-
 
   return (
     <div className="container mx-auto px-4">
@@ -73,6 +88,7 @@ export default function Page() {
         setCategories={setCategories}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        isSubmitting={isSubmitting}
       />
     </div>
   );

@@ -12,25 +12,35 @@ export default function Page() {
     "https://placehold.jp/800x400.png"
   );
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsSubmitting(false);
     e.preventDefault();
-    const res = await fetch("/api/admin/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        content,
-        thumbnailUrl,
-        categories,
-      }),
-    });
-    const { id } = await res.json();
-    router.push(`/admin/posts/${id}`);
-    alert("記事を作成しました");
+    try{
+
+      const res = await fetch("/api/admin/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          content,
+          thumbnailUrl,
+          categories,
+        }),
+      });
+      const { id } = await res.json();
+      router.push(`/admin/posts/${id}`);
+    } catch (e) {
+      console.error("記事の作成に失敗しました:", e);
+      alert("記事の作成に失敗しました");
+    } finally {
+      setIsSubmitting(true);
+      alert("記事を作成しました");
+    }
   };
 
   return (
@@ -49,6 +59,7 @@ export default function Page() {
         categories={categories}
         setCategories={setCategories}
         onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     </div>
   );

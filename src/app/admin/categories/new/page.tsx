@@ -7,21 +7,31 @@ import { CategoryForm } from "../_components/CategoryForm";
 export default function Page() {
   const [name, setName] = useState("");
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsSubmitting(false);
     e.preventDefault();
-    const res = await fetch("/api/admin/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name
-      }),
-    });
-    const { id } = await res.json();
-    router.push(`/admin/categories/${id}`);
-    alert("カテゴリーを作成しました");
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+        }),
+      });
+      const { id } = await res.json();
+      router.push(`/admin/categories/${id}`);
+    } catch (e) {
+      console.error("カテゴリーの作成に失敗しました:", e);
+      alert("カテゴリーの作成に失敗しました");
+    } finally {
+      setIsSubmitting(true);
+      alert("カテゴリーを作成しました");
+    }
+
   };
 
   return (
@@ -34,6 +44,7 @@ export default function Page() {
         name={name}
         setName={setName}
         onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     </div>
   );
