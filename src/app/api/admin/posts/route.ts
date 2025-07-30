@@ -12,7 +12,7 @@ interface CreatePostRequestBody {
 }
 
 // POSTという命名にすることで、POSTリクエストの時にこの関数が呼ばれる
-export const POST = async (request: NextRequest, context: any) => {
+export const POST = async (request: NextRequest) => {
   try {
     // リクエストのbodyをJSONとして取得
     const body = await request.json();

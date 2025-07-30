@@ -13,11 +13,17 @@ export default function Detail() {
   useEffect(() => {
     const fetcher = async () => {
       setIsLoading(true);
-
-      const res = await fetch(`/api/posts/${id}`);
-      const { data } = await res.json();
-      setPost(data);
-      setIsLoading(false);
+      try {
+        const res = await fetch(
+          `/api/posts/${id}`
+        );
+        const {post} = await res.json();
+        setPost(post);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetcher();
   }, [id]);
@@ -54,12 +60,12 @@ export default function Detail() {
                   {new Date(post.createdAt).toLocaleDateString()}
                 </div>
                 <div className="flex">
-                  {post.postCategories.map((postCategory) => (
+                  {post.postCategories.map((postCategories) => (
                     <div
-                      key={postCategory.category.id}
+                      key={postCategories.category.id}
                       className="border rounded text-[#06c] border-[#06c] mr-2 px-1 py-0.5"
                     >
-                      {postCategory.category.name}
+                      {postCategories.category.name}
                     </div>
                   ))}
                 </div>
