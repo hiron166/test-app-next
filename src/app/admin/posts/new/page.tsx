@@ -16,7 +16,7 @@ export default function Page() {
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     e.preventDefault();
     try{
 
@@ -34,12 +34,12 @@ export default function Page() {
       });
       const { id } = await res.json();
       router.push(`/admin/posts/${id}`);
+      alert("記事を作成しました");
     } catch (e) {
       console.error("記事の作成に失敗しました:", e);
       alert("記事の作成に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("記事を作成しました");
+      setIsSubmitting(false);
     }
   };
 

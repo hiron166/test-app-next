@@ -16,7 +16,7 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     // フォームのデフォルトの動作をキャンセルします。
     e.preventDefault();
     // 記事を作成します。
@@ -33,29 +33,29 @@ export default function Page() {
           categories,
         }),
       });
+      alert("記事を更新しました");
     } catch (e) {
       console.error("記事の更新に失敗しました:", e);
       alert("記事の更新に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("記事を更新しました");
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
     if (!confirm("記事を削除しますか？")) return;
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     try {
       await fetch(`/api/admin/posts/${id}`, {
         method: "DELETE",
       });
+      alert("記事を削除しました");
+      router.push("/admin/posts");
     } catch (e) {
       console.error("記事の削除に失敗しました:", e);
       alert("記事の削除に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("記事を削除しました");
-      router.push("/admin/posts");
+      setIsSubmitting(false);
     }
   };
 

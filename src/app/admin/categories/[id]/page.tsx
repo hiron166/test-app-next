@@ -12,7 +12,7 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     // フォームのデフォルトの動作をキャンセルします。
     e.preventDefault();
     // カテゴリーを作成します。
@@ -26,29 +26,29 @@ export default function Page() {
           name,
         }),
       });
+      alert("カテゴリーを更新しました");
     } catch (e) {
       console.error("カテゴリーの更新に失敗しました:", e);
       alert("カテゴリーの更新に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("カテゴリーを更新しました");
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
     if (!confirm("カテゴリーを削除しますか？")) return;
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     try {
       await fetch(`/api/admin/categories/${id}`, {
         method: "DELETE",
       });
+      alert("カテゴリーを削除しました");
+      router.push("/admin/categories");
     } catch (e) {
       console.error("カテゴリーの削除に失敗しました:", e);
       alert("カテゴリーの削除に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("カテゴリーを削除しました");
-      router.push("/admin/categories");
+      setIsSubmitting(false);
     }
   };
 

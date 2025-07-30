@@ -10,7 +10,7 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     e.preventDefault();
     try {
       const res = await fetch("/api/admin/categories", {
@@ -23,13 +23,13 @@ export default function Page() {
         }),
       });
       const { id } = await res.json();
+      alert("カテゴリーを作成しました");
       router.push(`/admin/categories/${id}`);
     } catch (e) {
       console.error("カテゴリーの作成に失敗しました:", e);
       alert("カテゴリーの作成に失敗しました");
     } finally {
-      setIsSubmitting(true);
-      alert("カテゴリーを作成しました");
+      setIsSubmitting(false);
     }
 
   };
