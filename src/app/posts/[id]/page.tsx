@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { MicroCmsPost } from "../../_types/MicroCmsPost";
+import { Post } from "@/app/_types/Post";
 
 export default function Detail() {
   const { id } = useParams();
-  const [post, setPost] = useState<MicroCmsPost | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -15,16 +15,10 @@ export default function Detail() {
       setIsLoading(true);
       try {
         const res = await fetch(
-          `https://vx8lbfap52.microcms.io/api/v1/posts/${id}`,
-          {
-            headers: {
-              "X-MICROCMS-API-KEY": process.env
-                .NEXT_PUBLIC_MICROCMS_API_KEY as string,
-            },
-          }
+          `/api/posts/${id}`
         );
-        const data = await res.json();
-        setPost(data);
+        const {post} = await res.json();
+        setPost(post);
       } catch (e) {
         console.log(e);
       } finally {
@@ -53,7 +47,7 @@ export default function Detail() {
             <div>
               <div className="h-auto max-w-full">
                 <Image
-                  src={post.thumbnail.url}
+                  src={post.thumbnailUrl}
                   alt=""
                   width={800}
                   height={400}
@@ -66,12 +60,12 @@ export default function Detail() {
                   {new Date(post.createdAt).toLocaleDateString()}
                 </div>
                 <div className="flex">
-                  {post.categories.map((category) => (
+                  {post.postCategories.map((postCategories) => (
                     <div
-                      key={category.id}
+                      key={postCategories.category.id}
                       className="border rounded text-[#06c] border-[#06c] mr-2 px-1 py-0.5"
                     >
-                      {category.name}
+                      {postCategories.category.name}
                     </div>
                   ))}
                 </div>

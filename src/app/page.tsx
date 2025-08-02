@@ -2,28 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { MicroCmsPost } from "./_types/MicroCmsPost";
+import { Post } from "./_types/Post";
 
 export default function Top() {
-  const [posts, setPosts] = useState<MicroCmsPost[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetcher = async () => {
-      try {
-        const res = await fetch("https://vx8lbfap52.microcms.io/api/v1/posts", {
-          headers: {
-            "X-MICROCMS-API-KEY": process.env
-              .NEXT_PUBLIC_MICROCMS_API_KEY as string,
-          },
-        });
-        const { contents } = await res.json();
-        setPosts(contents);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsLoading(false);
-      }
+      const res = await fetch("api/posts");
+      const { posts } = await res.json();
+      setPosts(posts);
+      setIsLoading(false);
     };
 
     fetcher();
@@ -46,12 +36,12 @@ export default function Top() {
                           {new Date(post.createdAt).toLocaleDateString()}
                         </div>
                         <div className="flex">
-                          {post.categories.map((category) => (
+                          {post.postCategories.map((pc) => (
                             <div
-                              key={category.id}
+                              key={pc.category.id}
                               className="border rounded text-[#06c] border-[#06c] mr-2 px-1 py-0.5"
                             >
-                              {category.name}
+                              {pc.category.name}
                             </div>
                           ))}
                         </div>
