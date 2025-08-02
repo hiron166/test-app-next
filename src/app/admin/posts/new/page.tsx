@@ -18,8 +18,7 @@ export default function Page() {
   const handleSubmit = async (e: React.FormEvent) => {
     setIsSubmitting(true);
     e.preventDefault();
-    try{
-
+    try {
       const res = await fetch("/api/admin/posts", {
         method: "POST",
         headers: {
