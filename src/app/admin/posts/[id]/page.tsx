@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { PostForm } from "../_components/PostForm";
 import { Category } from "@/app/_types/Category";
 import { Post } from "@/app/_types/Post";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 export default function Page() {
   const [title, setTitle] = useState("");
@@ -14,8 +15,10 @@ export default function Page() {
   const { id } = useParams();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { token } = useSupabaseSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!token) return;
     setIsSubmitting(true);
     // フォームのデフォルトの動作をキャンセルします。
     e.preventDefault();
@@ -25,6 +28,7 @@ export default function Page() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: token,
         },
         body: JSON.stringify({
           title,
@@ -43,11 +47,16 @@ export default function Page() {
   };
 
   const handleDelete = async () => {
+    if (!token) return;
     if (!confirm("記事を削除しますか？")) return;
     setIsSubmitting(true);
     try {
       await fetch(`/api/admin/posts/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
       });
       alert("記事を削除しました");
       router.push("/admin/posts");
@@ -60,8 +69,14 @@ export default function Page() {
   };
 
   useEffect(() => {
+    if (!token) return;
     const fetcher = async () => {
-      const res = await fetch(`/api/admin/posts/${id}`);
+      const res = await fetch(`/api/admin/posts/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
       const { post }: { post: Post } = await res.json();
       setTitle(post.title);
       setContent(post.content);
@@ -69,7 +84,7 @@ export default function Page() {
       setCategories(post.postCategories.map((pc) => pc.category));
     };
     fetcher();
-  }, [id]);
+  }, [id,token]);
 
   return (
     <div className="container mx-auto px-4">
