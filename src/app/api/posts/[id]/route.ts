@@ -1,4 +1,3 @@
-import { supabase } from "@/utils/supabase";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,10 +9,6 @@ export const GET = async (
 ) => {
   // paramsの中にidが入っているので、それを取り出す
   const { id } = params;
-  const token = request.headers.get("Authorization") ?? "";
-  const { error } = await supabase.auth.getUser(token);
-  if (error)
-    return NextResponse.json({ status: error.message }, { status: 400 });
   try {
     // idを元にPostをDBから取得
     const post = await prisma.post.findUnique({

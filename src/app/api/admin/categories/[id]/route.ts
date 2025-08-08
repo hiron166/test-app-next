@@ -10,7 +10,7 @@ export const GET = async (
   const { id } = params;
   const token = request.headers.get("Authorization") ?? "";
   const { error } = await supabase.auth.getUser(token);
-  if (error) return NextResponse.json({ status: error.message }, { status: 401 });
+  if (error) return NextResponse.json({ status: error.message }, { status: 400 });
   try {
     const category = await prisma.category.findUnique({
       where: {
