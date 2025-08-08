@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { Category } from "@/app/_types/Category";
 import { useEffect } from "react";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 interface Props {
   selectedCategories: Category[];
@@ -20,7 +21,7 @@ export const CategoriesSelect: React.FC<Props> = ({
   setSelectedCategories,
 }) => {
   const [categories, setCategories] = React.useState<Category[]>([]);
-
+  const { token } = useSupabaseSession();
   const handleChange = (value: number[]) => {
     value.forEach((v: number) => {
       const isSelect = selectedCategories.some((c) => c.id === v);
@@ -35,13 +36,19 @@ export const CategoriesSelect: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    if (!token) return;
     const fetcher = async () => {
-      const res = await fetch("/api/admin/categories");
+      const res = await fetch("/api/admin/categories", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
       const { categories } = await res.json();
       setCategories(categories);
     };
     fetcher();
-  }, []);
+  }, [token]);
 
   return (
     <>
@@ -49,7 +56,7 @@ export const CategoriesSelect: React.FC<Props> = ({
         <Select
           multiple
           value={selectedCategories}
-          onChange={(e) => handleChange((e.target.value as unknown) as number[])}
+          onChange={(e) => handleChange(e.target.value as unknown as number[])}
           input={<OutlinedInput />}
           renderValue={(selected: Category[]) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
