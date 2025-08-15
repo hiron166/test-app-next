@@ -1,3 +1,4 @@
+import { supabase } from "@/utils/supabase";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 const prisma = new PrismaClient();
@@ -7,6 +8,12 @@ export const GET = async (
   { params }: { params: { id: string } }
 ) => {
   const { id } = params;
+
+  const token = request.headers.get("Authorization") ?? "";
+  const { error } = await supabase.auth.getUser(token);
+  if (error)
+    return NextResponse.json({ status: error.message }, { status: 400 });
+
   try {
     const post = await prisma.post.findUnique({
       where: {
@@ -61,6 +68,12 @@ export const PUT = async (
   // リクエストのbodyを取得
   const { title, content, categories, thumbnailUrl }: UpdatePostRequestBody =
     await request.json();
+
+    const token = request.headers.get("Authorization") ?? "";
+  const { error } = await supabase.auth.getUser(token);
+  if (error)
+    return NextResponse.json({ status: error.message }, { status: 400 });
+
   try {
     // idを指定して、Postを更新
     const post = await prisma.post.update({
@@ -110,6 +123,11 @@ export const DELETE = async (
 ) => {
   // paramsの中にidが入っているので、それを取り出す
   const { id } = params;
+
+    const token = request.headers.get("Authorization") ?? "";
+  const { error } = await supabase.auth.getUser(token);
+  if (error)
+    return NextResponse.json({ status: error.message }, { status: 400 });
 
   try {
     // idを指定して、Postを削除

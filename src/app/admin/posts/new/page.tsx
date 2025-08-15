@@ -4,6 +4,7 @@ import { Category } from "@/app/_types/Category";
 import { PostForm } from "../_components/PostForm";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 
 export default function Page() {
   const [title, setTitle] = useState("");
@@ -14,16 +15,17 @@ export default function Page() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { token } = useSupabaseSession();
 
   const handleSubmit = async (e: React.FormEvent) => {
     setIsSubmitting(true);
     e.preventDefault();
-    try{
-
+    try {
       const res = await fetch("/api/admin/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: token!,
         },
         body: JSON.stringify({
           title,
