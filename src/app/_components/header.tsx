@@ -4,6 +4,7 @@ import { useSupabaseSession } from "../_hooks/useSupabaseSession";
 import { supabase } from "@/utils/supabase";
 import React from "react";
 
+
 export const Header: React.FC = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
