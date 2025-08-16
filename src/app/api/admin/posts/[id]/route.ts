@@ -55,7 +55,7 @@ interface UpdatePostRequestBody {
   title: string;
   content: string;
   categories: { id: number }[];
-  thumbnailUrl: string;
+  thumbnailImageKey: string;
 }
 
 // PUTという命名にすることで、PUTリクエストの時にこの関数が呼ばれる
@@ -66,7 +66,7 @@ export const PUT = async (
   // paramsの中にidが入っているので、それを取り出す
   const { id } = params;
   // リクエストのbodyを取得
-  const { title, content, categories, thumbnailUrl }: UpdatePostRequestBody =
+  const { title, content, categories, thumbnailImageKey }: UpdatePostRequestBody =
     await request.json();
 
     const token = request.headers.get("Authorization") ?? "";
@@ -83,7 +83,7 @@ export const PUT = async (
       data: {
         title,
         content,
-        thumbnailUrl,
+        thumbnailImageKey,
       },
     });
 
