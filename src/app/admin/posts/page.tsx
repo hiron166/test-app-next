@@ -2,31 +2,15 @@
 
 import Link from "next/link";
 import { Post } from "@/app/_types/Post";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import useSWR from "swr";
+import { useFetch } from "../_hooks/useFetch";
 
 export default function Page() {
-  const { token } = useSupabaseSession();
-
-  const fetcher = async (url: string) => {
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token!,
-      },
-    });
-    if (!res.ok) throw new Error("");
-    return res.json();
-  };
-
-  const { data, error, isLoading } = useSWR(
-    token ? "/api/admin/posts" : null,
-    fetcher
-  );
-  if (error) return <div>エラーが発生しました</div>;
+  const { data, error, isLoading } = useFetch("/api/admin/posts");
+  if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
-
   const posts: Post[] = data?.posts ?? [];
+
+
 
   return (
     <>

@@ -2,27 +2,10 @@
 
 import Link from "next/link";
 import { Category } from "@/app/_types/Category";
-import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
-import useSWR from "swr";
+import { useFetch } from "../_hooks/useFetch";
 
 export default function Page() {
-  const { token } = useSupabaseSession();
-
-  const fetcher = async (url: string) => {
-    const res = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token!,
-      },
-    });
-    if (!res.ok) throw new Error("");
-    return res.json();
-  };
-
-  const { data, error, isLoading } = useSWR(
-    token ? "/api/admin/categories" : null,
-    fetcher
-  );
+  const { data, error, isLoading } = useFetch("/api/admin/categories");
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
   const categories: Category[] = data?.categories ?? [];
