@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
-// import "../../globals.css";
 import { ContactForm } from "../_types/contactForm";
 
 export const Contact: React.FC = () => {
@@ -19,6 +18,7 @@ export const Contact: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues,
+    mode:"onChange"  //入力中にバリデーション出る
   });
 
   // サブミット時の処理

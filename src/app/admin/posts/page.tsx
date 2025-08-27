@@ -1,30 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Post } from "@/app/_types/Post";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import useSWR from "swr";
 
 export default function Page() {
-  const [posts, setPosts] = useState<Post[]>([]);
   const { token } = useSupabaseSession();
 
-  useEffect(() => {
-    if (!token) return;
+  const fetcher = async (url: string) => {
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token!,
+      },
+    });
+    if (!res.ok) throw new Error("");
+    return res.json();
+  };
 
-    const fetcher = async () => {
-      const res = await fetch("/api/admin/posts", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const { posts } = await res.json();
-      setPosts(posts);
-    };
+  const { data, error, isLoading } = useSWR(
+    token ? "/api/admin/posts" : null,
+    fetcher
+  );
+  if (error) return <div>エラーが発生しました</div>;
+  if (isLoading) return <div>loading...</div>;
 
-    fetcher();
-  }, [token]);
+  const posts: Post[] = data?.posts ?? [];
 
   return (
     <>

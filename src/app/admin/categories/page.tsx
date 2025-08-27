@@ -1,30 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-// import { Post } from "@/app/_types/Post";
 import { Category } from "@/app/_types/Category";
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
+import useSWR from "swr";
 
 export default function Page() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const { token } = useSupabaseSession();
 
-  useEffect(() => {
-    if (!token) return;
-    const fetcher = async () => {
-      const res = await fetch("/api/admin/categories", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const { categories } = await res.json();
-      setCategories(categories);
-    };
+  const fetcher = async (url: string) => {
+    const res = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token!,
+      },
+    });
+    if (!res.ok) throw new Error("");
+    return res.json();
+  };
 
-    fetcher();
-  }, [token]);
+  const { data, error, isLoading } = useSWR(
+    token ? "/api/admin/categories" : null,
+    fetcher
+  );
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+  const categories: Category[] = data?.categories ?? [];
 
   return (
     <>
