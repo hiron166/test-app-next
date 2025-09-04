@@ -1,4 +1,4 @@
-export type SigninFormData = {
+export type SignupFormData = {
   email: string;
   password: string;
 }

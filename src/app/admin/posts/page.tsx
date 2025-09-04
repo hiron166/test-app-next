@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { Post } from "@/app/_types/Post";
 import { useFetch } from "../_hooks/useFetch";
+import { FetchData } from "@/app/_types/FetchData";
 
 export default function Page() {
-  const { data, error, isLoading } = useFetch("/api/admin/posts");
+  const { data, error, isLoading } = useFetch<FetchData>("/api/admin/posts");
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
   const posts: Post[] = data?.posts ?? [];
+  console.log(data);
 
 
 

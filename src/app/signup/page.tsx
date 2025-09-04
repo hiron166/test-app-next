@@ -2,8 +2,7 @@
 
 import { supabase } from "@/utils/supabase";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { SigninFormData } from "../_types/SigninFormData";
-
+import { SignupFormData } from "../_types/SignupFormData";
 
 export default function Page() {
   const {
@@ -11,9 +10,9 @@ export default function Page() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<SigninFormData>({ mode: "onChange" });
+  } = useForm<SignupFormData>({ mode: "onChange" });
 
-  const onSubmit: SubmitHandler<SigninFormData> = async (data) => {
+  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
     const { error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,

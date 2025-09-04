@@ -2,10 +2,10 @@
 import { useSupabaseSession } from "@/app/_hooks/useSupabaseSession";
 import useSWR from "swr";
 
-export const useFetch = (url: string) => {
+export const useFetch = <T>(url: string) => {
   const { token } = useSupabaseSession();
 
-  const fetcher = async (url: string) => {
+  const fetcher = async (url: string):Promise<T> => {
     const res = await fetch(url, {
       headers: {
         "Content-Type": "application/json",
@@ -16,10 +16,6 @@ export const useFetch = (url: string) => {
     return res.json();
   };
 
-  const { data, error, isLoading } = useSWR(
-    token ? url : null,
-    fetcher
-  );
+  const { data, error, isLoading } = useSWR<T>(token ? url : null, fetcher);
   return { data, error, isLoading };
 };
-
