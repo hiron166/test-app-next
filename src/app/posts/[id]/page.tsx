@@ -1,36 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import { Post } from "@/app/_types/Post";
+import { useFetchDetail } from "../_hooks/useFetchDetail";
+import { DetailData } from "@/app/_types/DetailData";
 
 export default function Detail() {
-  const { id } = useParams();
-  const [post, setPost] = useState<Post | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { data, error, isLoading } = useFetchDetail<DetailData>();
 
-  useEffect(() => {
-    const fetcher = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(
-          `/api/posts/${id}`
-        );
-        const {post} = await res.json();
-        setPost(post);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetcher();
-  }, [id]);
-
-  if (isLoading) {
-    return <p className="my-8 mx-auto max-w-3xl px-4">読み込み中...</p>;
-  }
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+  const post = data?.post;
+  const thumbnailImageUrl = data?.thumbnailImageUrl ?? null;
 
   if (!post) {
     return (
@@ -45,14 +25,16 @@ export default function Detail() {
         <div>
           <div className="my-8 mx-auto max-w-3xl px-4">
             <div>
-              <div className="h-auto max-w-full">
-                <Image
-                  src={post.thumbnailUrl}
-                  alt=""
-                  width={800}
-                  height={400}
-                />
-              </div>
+              {thumbnailImageUrl && (
+                <div className="h-auto max-w-full">
+                  <Image
+                    src={thumbnailImageUrl}
+                    alt=""
+                    width={800}
+                    height={400}
+                  />
+                </div>
+              )}
             </div>
             <div className="p-4">
               <div className="flex justify-between">

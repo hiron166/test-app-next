@@ -1,22 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-// import { Post } from "@/app/_types/Post";
 import { Category } from "@/app/_types/Category";
+import { useFetch } from "../_hooks/useFetch";
 
 export default function Page() {
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetcher = async () => {
-      const res = await fetch("/api/admin/categories");
-      const { categories } = await res.json();
-      setCategories(categories);
-    };
-
-    fetcher();
-  }, []);
+  const { data, error, isLoading } = useFetch("/api/admin/categories");
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+  const categories: Category[] = data?.categories ?? [];
 
   return (
     <>
